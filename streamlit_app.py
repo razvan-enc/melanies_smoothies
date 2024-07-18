@@ -1,6 +1,35 @@
-# Import python packages
 import streamlit as st
-from snowflake.snowpark.context import get_active_session
+from snowflake.snowpark import Session
+from snowflake.snowpark.exceptions import SnowparkSessionException
+
+# Configurare conexiune Snowflake
+connection_parameters = {
+    "account": "KVFEXRW.TC40940",
+    "user": "crazvan6",
+    "password": "Counter6,.",
+    "role": "SYSADMIN",
+    "warehouse": "COMPUTE_WH",
+    "database": "SMOOTHIES",
+    "schema": "PUBLIC"
+}
+
+def create_snowflake_session():
+    try:
+        session = Session.builder.configs(connection_parameters).create()
+        return session
+    except SnowparkSessionException as e:
+        st.error(f"Could not create Snowflake session: {e}")
+        return None
+
+# Creează sesiunea
+session = create_snowflake_session()
+
+# Verifică dacă sesiunea a fost creată cu succes
+if session:
+    st.write("Snowflake session created successfully!")
+    # Poți continua cu logica aplicației tale folosind `session`
+else:
+    st.error("Failed to create Snowflake session. Please check the connection parameters.")
 
 # Write directly to the app
 st.title(":smoothie: Example Streamlit App :balloon:")
